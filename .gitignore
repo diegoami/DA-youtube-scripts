@@ -1,0 +1,8 @@
+client_secrets_yt.json
+.idea/*
+*.pyc
+recommender/__pycache__/*
+*.py-oauth2.json
+
+
+
