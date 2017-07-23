@@ -1,6 +1,90 @@
 from youtube3.youtube import *
 import json
 from oauth2client.tools import argparser
+import re
+
+
+def process_videos(workDir='.', inputFile='liked.json', recommendedFile='recommended.json',
+                   excludedFile='excluded.json', postponedFile='postponed.json',maxCount=5):
+
+
+    recommended, excluded, postponed, liked = {}, {}, {}, {}
+    workDir, inputFile, recommendedFile, excludedFile, postponedFile = workDir or '.', inputFile or 'liked.json', \
+             recommendedFile or 'recommended.json', excludedFile or 'excluded.json', postponedFile or 'postponed.json'
+
+    liked = load_definition(liked, inputFile, workDir)
+    recommended = load_definition(recommended, recommendedFile, workDir)
+    excluded = load_definition(excluded, excludedFile, workDir)
+    postponed = load_definition(postponed, postponedFile, args.workDir)
+    start = int(args.start) if args.start else 0
+    end = min(int(args.end), len(liked)) if args.end else len(liked)
+    youtube = Youtube(get_authenticated_service(args))
+    likedList = list(liked.items())[start:end]
+    for videoId, title in likedList:
+        print("Now processing %s, %s" % (videoId, title))
+        for relatedvideos in youtube.iterate_related_videos(videoId, maxCount):
+            for item in relatedvideos['items']:
+                rvideoId, rtitle = item['id']['videoId'], item['snippet']['title']
+                if rvideoId not in liked and rvideoId not in excluded and rvideoId not in postponed:
+                    if rvideoId not in recommended:
+                        recommended[rvideoId] = {"title": rtitle, "count": 1}
+                    else:
+                        recommended[rvideoId]["count"] += 1
+    recommendedSorted = sorted(recommended.items(), key=lambda x: x[1]["count"], reverse=True)
+    return recommendedSorted
+
+
+def load_definition(records, inputFile, workDir):
+    if os.path.isfile(workDir + '/' + inputFile):
+        with open(workDir + '/' + inputFile, 'r', encoding="utf-8") as f:
+            records = dict(json.load(f))
+    return records
+
+
+def tokenize_lists( recommended, liked, workDir , ignore_words_file):
+
+    def get_tokenized(str,ignored_words):
+        str = str.lower()
+        str = re.sub(r"\(.*\)", "" , str)
+        strtok = re.split(r'[\[\s\-\(\)\"\\\/\|\!\&]',str)
+        strl = [s for s in strtok if s not in ignored_words and len(s) > 0]
+        return strl
+
+    ignored_words = []
+    if os.path.isfile(workDir + '/' + ignore_words_file):
+        with open(workDir + '/' + ignore_words_file, 'r', encoding="utf-8") as f:
+            ignored_words = f.read().splitlines()
+    ignored_words = [ i.lower() for i in ignored_words]
+    tok_liked = {k:get_tokenized(v,ignored_words) for k,v in liked.items()}
+    tok_liked_list = [get_tokenized(v, ignored_words) for k, v in liked.items()]
+    #print(tok_liked_list)
+    tok_recommended = {k: {"title": get_tokenized(v["title"],ignored_words), "count": v["count"]}  for k, v in recommended.items()}
+    tok_duplicates = {k: {"title": v["title"], "count": v["count"]} for k, v in
+                      tok_recommended.items() if v["title"] in tok_liked_list}
+    tok_no_duplicates = {k: {"title": v["title"], "count": v["count"]} for k, v in
+                         tok_recommended.items() if v["title"] not in tok_liked_list}
+    return tok_duplicates, tok_no_duplicates
+
+
+def save_recommended(workDir='.', recommendedFile='recommended.json', recommendedSorted={}  ):
+    workDir, recommendedFile, recommendedSorted = workDir or '.', \
+             recommendedFile or 'recommended.json', recommendedSorted or {}
+    save_to_json(recommendedFile, recommendedSorted, workDir)
+
+
+def save_to_json(outputFile, outputData, workDir):
+
+    with open(workDir + '/' + outputFile, 'w', encoding="utf-8") as f:
+        json.dump(outputData, f, ensure_ascii=False)
+
+
+def do_main():
+    recommendedSorted = process_videos(workDir=args.workDir, inputFile=args.inputFile,
+                                       recommendedFile=args.recommendedFile,
+                                       excludedFile=args.excludedFile, postponedFile=args.postponedFile,
+                                       maxCount=args.maxCount)
+    save_recommended(workDir=args.workDir, recommendedFile=args.recommendedFile, recommendedSorted=recommendedSorted)
+
 
 if __name__ == "__main__":
     argparser.add_argument('--workDir')
@@ -14,49 +98,10 @@ if __name__ == "__main__":
     argparser.add_argument('--postponedFile')
 
     args = argparser.parse_args()
-    count = 0
-    recommended = {}
-    excluded = {}
-    postponed = {}
-    inputFile = args.inputFile or 'liked.json'
-    recommendedFile = args.recommendedFile or 'recommended.json'
-    excludedFile = args.excludedFile or 'excluded.json'
-    postponedFile = args.postponedFile or 'postponed.json'
+    liked, recommended = {}, {}
+    liked = load_definition(liked, args.inputFile, args.workDir)
+    recommended = load_definition(recommended, args.recommendedFile, args.workDir)
 
-    maxCount = args.maxCount or 5
-
-    with open(args.workDir+'/'+inputFile,'r',encoding="utf-8") as f:
-        liked = json.load(f)
-
-    if os.path.isfile(args.workDir + '/'+recommendedFile ):
-        with open(args.workDir + '/'+recommendedFile , 'r', encoding="utf-8") as f:
-            recommended = dict(json.load(f))
-
-    if os.path.isfile(args.workDir + '/'+excludedFile ):
-        with open(args.workDir + '/'+excludedFile , 'r', encoding="utf-8") as f:
-            excluded = dict(json.load(f))
-
-    if os.path.isfile(args.workDir + '/'+postponedFile ):
-        with open(args.workDir + '/'+postponedFile  , 'r', encoding="utf-8") as f:
-            postponed = dict(json.load(f))
-
-
-    start = int(args.start) if args.start else 0
-    end = min(int(args.end),len(liked)) if args.end else len(liked)
-
-    youtube = Youtube(get_authenticated_service(args))
-
-    likedList = list(liked.items())[start:end]
-    for videoId,title in likedList:
-        print("Now processing %s, %s" % (videoId, title))
-        for relatedvideos in youtube.iterate_related_videos(videoId,maxCount):
-            for item in relatedvideos['items']:
-                rvideoId, rtitle = item['id']['videoId'],item['snippet']['title']
-                if rvideoId not in liked and rvideoId not in excluded and rvideoId not in postponed:
-                    if rvideoId not in recommended:
-                        recommended[rvideoId] = {"title" : rtitle,"count" : 1}
-                    else:
-                        recommended[rvideoId]["count"] +=1
-    recommendedSorted = sorted(recommended.items(), key=lambda x: x[1]["count"], reverse=True)
-    with open(args.workDir + '/'+recommendedFile, 'w', encoding="utf-8") as f:
-        json.dump(recommendedSorted , f, ensure_ascii=False)
+    duplicates, no_duplicates = tokenize_lists(recommended=recommended,liked=liked, workDir=args.workDir, ignore_words_file='ignore_words.txt')
+    save_to_json(outputData=duplicates, outputFile = 'duplicates.json', workDir=args.workDir)
+    save_to_json(outputData=no_duplicates, outputFile='recommended_no_dup.json', workDir=args.workDir)
