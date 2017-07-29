@@ -48,7 +48,7 @@ def tokenize_lists( recommended, liked, workDir , ignore_words_file):
         str = re.sub(r"\(.*\)", "" , str)
         str = re.sub(r"[0-9]+", "", str)
 
-        strtok = re.split(r'[\[\s\-\(\)\"\\\/\|\!\&\,\.]',str)
+        strtok = re.split(r'[\[\s\-\(\)\"\\\/\|\!\&\,\.\+]',str)
         strl = [s for s in strtok if s not in ignored_words and len(s) > 0]
         return strl
 
@@ -80,12 +80,27 @@ def save_to_json(outputFile, outputData, workDir):
         json.dump(outputData, f, ensure_ascii=False)
 
 
-def do_main():
+def retrieve_recommended(args):
     recommendedSorted = process_videos(workDir=args.workDir, inputFile=args.inputFile,
                                        recommendedFile=args.recommendedFile,
                                        excludedFile=args.excludedFile, postponedFile=args.postponedFile,
                                        maxCount=args.maxCount)
     save_recommended(workDir=args.workDir, recommendedFile=args.recommendedFile, recommendedSorted=recommendedSorted)
+    return recommendedSorted
+
+
+def eliminate_duplicates(args):
+    liked, recommended = {}, {}
+
+
+    liked = load_definition(liked, args.inputFile, args.workDir)
+    recommended = load_definition(recommended, args.recommendedFile, args.workDir)
+    duplicates, no_duplicates = tokenize_lists(recommended=recommended, liked=liked, workDir=args.workDir,
+                                               ignore_words_file='ignore_words.txt')
+    save_to_json(outputData=list([[k, v] for k, v in duplicates.items()]), outputFile='duplicates.json',
+                 workDir=args.workDir)
+    save_to_json(outputData=list([[k, v] for k, v in no_duplicates.items()]), outputFile='recommended_no_dup.json',
+                 workDir=args.workDir)
 
 
 if __name__ == "__main__":
@@ -100,10 +115,5 @@ if __name__ == "__main__":
     argparser.add_argument('--postponedFile')
 
     args = argparser.parse_args()
-    liked, recommended = {}, {}
-    liked = load_definition(liked, args.inputFile, args.workDir)
-    recommended = load_definition(recommended, args.recommendedFile, args.workDir)
-
-    duplicates, no_duplicates = tokenize_lists(recommended=recommended,liked=liked, workDir=args.workDir, ignore_words_file='ignore_words.txt')
-    save_to_json(outputData=list([[k,v] for k,v in duplicates.items()]), outputFile = 'duplicates.json', workDir=args.workDir)
-    save_to_json(outputData=list([[k,v] for k,v in no_duplicates.items()]), outputFile='recommended_no_dup.json', workDir=args.workDir)
+    retrieve_recommended(args)
+    eliminate_duplicates(args)
