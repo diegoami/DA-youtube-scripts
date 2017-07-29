@@ -46,7 +46,9 @@ def tokenize_lists( recommended, liked, workDir , ignore_words_file):
     def get_tokenized(str,ignored_words):
         str = str.lower()
         str = re.sub(r"\(.*\)", "" , str)
-        strtok = re.split(r'[\[\s\-\(\)\"\\\/\|\!\&]',str)
+        str = re.sub(r"[0-9]+", "", str)
+
+        strtok = re.split(r'[\[\s\-\(\)\"\\\/\|\!\&\,\.]',str)
         strl = [s for s in strtok if s not in ignored_words and len(s) > 0]
         return strl
 
@@ -103,5 +105,5 @@ if __name__ == "__main__":
     recommended = load_definition(recommended, args.recommendedFile, args.workDir)
 
     duplicates, no_duplicates = tokenize_lists(recommended=recommended,liked=liked, workDir=args.workDir, ignore_words_file='ignore_words.txt')
-    save_to_json(outputData=duplicates, outputFile = 'duplicates.json', workDir=args.workDir)
-    save_to_json(outputData=no_duplicates, outputFile='recommended_no_dup.json', workDir=args.workDir)
+    save_to_json(outputData=list([[k,v] for k,v in duplicates.items()]), outputFile = 'duplicates.json', workDir=args.workDir)
+    save_to_json(outputData=list([[k,v] for k,v in no_duplicates.items()]), outputFile='recommended_no_dup.json', workDir=args.workDir)
