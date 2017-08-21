@@ -3,6 +3,6 @@ client_secrets_yt.json
 *.pyc
 recommender/__pycache__/*
 *.py-oauth2.json
-
+amara_env.py
 
 
