@@ -4,6 +4,8 @@ import argparse
 from amara_env import amara_headers
 import os
 import json
+import traceback
+import sys
 
 def load_definition(records, inputFile, workDir):
     if os.path.isfile(workDir + '/' + inputFile):
@@ -55,3 +57,4 @@ if __name__ == "__main__":
 
         except:
             print("Error : Skipping {}".format(to_download))
+            traceback.print_exc(file=sys.stdout)

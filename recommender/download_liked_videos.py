@@ -1,9 +1,9 @@
 from youtube3.youtube import *
 import json
 from oauth2client.tools import argparser
-import re
+import traceback
 
-from youtube_dl.utils import ExtractorError
+
 
 
 def load_definition(records, inputFile, workDir):
@@ -34,3 +34,4 @@ if __name__ == "__main__":
             youtube.download(to_download, args.outDir)
         except:
             print("Skipping {}".format(to_download))
+            traceback.print_exc(file=sys.stdout)
