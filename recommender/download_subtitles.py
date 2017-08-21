@@ -38,7 +38,13 @@ if __name__ == "__main__":
     amara = Amara(amara_headers)
     for to_download in download_list:
         try:
-            file_name = args.outDir+'/'+videos_json[to_download]+'-'+to_download+'.srt'
+            title = videos_json[to_download]
+            title = title.replace('/','_')
+            title = title.replace('|', '_')
+
+            file_name = args.outDir+'/'+title+'-'+to_download+'.srt'
+
+
             if not os.path.isfile(file_name ):
                 amara_video = amara.retrieve_video(to_download)
                 if (amara_video):
