@@ -3,6 +3,8 @@ import json
 from oauth2client.tools import argparser
 import re
 
+from youtube_dl.utils import ExtractorError
+
 
 def load_definition(records, inputFile, workDir):
     if os.path.isfile(workDir + '/' + inputFile):
@@ -25,7 +27,10 @@ if __name__ == "__main__":
     video_key_lst = [k for k, v in videos_json.items()]
     start = int(args.start) if args.start else 0
     end = min(int(args.end), len(video_key_lst)) if args.end else len(video_key_lst)
-    donwload_list = video_key_lst[start:end]
-
+    download_list = video_key_lst[start:end]
     youtube = Youtube(get_authenticated_service(args))
-    youtube.download_list(donwload_list, args.outDir)
+    for to_download in download_list:
+        try:
+            youtube.download(to_download, args.outDir)
+        except:
+            print("Skipping {}".format(to_download))
