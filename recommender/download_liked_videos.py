@@ -1,7 +1,10 @@
+import os
 from youtube3.youtube import *
 import json
 from oauth2client.tools import argparser
 import traceback
+from youtube_dl.utils import sanitize_filename
+
 
 
 
@@ -31,6 +34,14 @@ if __name__ == "__main__":
     youtube = Youtube(get_authenticated_service(args))
     for to_download in download_list:
         try:
+            title = videos_json[to_download]
+
+            file_name_main = args.outDir + '/' + sanitize_filename(title) + '-' + to_download
+            psb_filenames = [file_name_main+'.' + ext for ext in ['webm', 'mkv','mp4']]
+            if any([ os.path.isfile(psb_filename) for psb_filename  in psb_filenames ]):
+                print("Found file {}, skipping".format(file_name_main ))
+                continue
+
             youtube.download(to_download, args.outDir)
         except:
             print("Skipping {}".format(to_download))
