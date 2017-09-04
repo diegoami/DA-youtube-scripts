@@ -7,10 +7,10 @@ import subprocess as sp
 
 def conv_to_audio(inputFile, outputFile):
     clip = mp.VideoFileClip(inputFile)
-    clip.audio.write_audiofile(outputFile,codec='libFLAC')
+    clip.audio.write_audiofile(outputFile)
 
 def conv_to_flac(inputFile, outputFile):
-    cmd= [ "ffmpeg", '-i',inputFile, outputFile]
+    cmd= [ "ffmpeg", '-i',inputFile, "-ac", "1" , outputFile]
     newprocess = sp.Popen(cmd)
     newprocess.wait()
 
@@ -37,12 +37,19 @@ if __name__ == "__main__":
 
         if not os.path.isfile(ouputaudiofile):
             print("Saving {}".format(ouputaudiofile))
-            conv_to_audio(filename, ouputaudiofile )
+            try:
+                conv_to_audio(filename, ouputaudiofile )
+            except:
+                print("Error converting {}".format(ouputaudiofile))
+
         else:
             print("Skipping {}".format(ouputaudiofile))
-        if not os.path.isfile(ouputaudiofileFlac):
+        if False and not os.path.isfile(ouputaudiofileFlac):
             print("Saving {}".format(ouputaudiofileFlac))
-            conv_to_flac(ouputaudiofile, ouputaudiofileFlac)
+            try:
+                conv_to_flac(ouputaudiofile, ouputaudiofileFlac)
+            except:
+                print("Error converting {}".format(ouputaudiofileFlac))
         else:
             print("Skipping {}".format(ouputaudiofileFlac))
 
