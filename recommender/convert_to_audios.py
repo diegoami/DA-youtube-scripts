@@ -3,10 +3,16 @@ from oauth2client.tools import argparser
 import glob
 import os
 import itertools
+import subprocess as sp
 
 def conv_to_audio(inputFile, outputFile):
     clip = mp.VideoFileClip(inputFile)
-    clip.audio.write_audiofile(outputFile)
+    clip.audio.write_audiofile(outputFile,codec='libFLAC')
+
+def conv_to_flac(inputFile, outputFile):
+    cmd= [ "ffmpeg", '-i',inputFile, outputFile]
+    newprocess = sp.Popen(cmd)
+    newprocess.wait()
 
 
 if __name__ == "__main__":
@@ -27,11 +33,19 @@ if __name__ == "__main__":
         file_root, file_extension = os.path.splitext(basename )
         #print(file_root)
         ouputaudiofile = args.outputDir+'/'+file_root+".mp3"
+        ouputaudiofileFlac = args.outputDir + '/' + file_root + ".flac"
+
         if not os.path.isfile(ouputaudiofile):
             print("Saving {}".format(ouputaudiofile))
             conv_to_audio(filename, ouputaudiofile )
         else:
             print("Skipping {}".format(ouputaudiofile))
+        if not os.path.isfile(ouputaudiofileFlac):
+            print("Saving {}".format(ouputaudiofileFlac))
+            conv_to_flac(ouputaudiofile, ouputaudiofileFlac)
+        else:
+            print("Skipping {}".format(ouputaudiofileFlac))
+
 
             #conv_to_audio(args.inputDir or "", args.inputFile, args.outputFile)
 
