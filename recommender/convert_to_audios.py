@@ -27,6 +27,11 @@ if __name__ == "__main__":
         file_root, file_extension = os.path.splitext(basename )
         #print(file_root)
         ouputaudiofile = args.outputDir+'/'+file_root+".mp3"
-        conv_to_audio(filename, ouputaudiofile )
-    #conv_to_audio(args.inputDir or "", args.inputFile, args.outputFile)
+        if not os.path.isfile(ouputaudiofile):
+            print("Saving {}".format(ouputaudiofile))
+            conv_to_audio(filename, ouputaudiofile )
+        else:
+            print("Skipping {}".format(ouputaudiofile))
+
+            #conv_to_audio(args.inputDir or "", args.inputFile, args.outputFile)
 
