@@ -59,7 +59,7 @@ python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/mu
 Requires FFMMPEG. On Ubuntu :  *sudo apt-get install ffmpeg*
 
 ```
-python convert_to_audios.py --inputDir ~/musicvideos/russian  --outputDir ~/musicaudios/russian
+python convert_to_audios.py --inputDir ~/musicvideos/russian  --outDir ~/musicaudios/russian
 ```
 
 ### DOWNLOAD SUBTITLES

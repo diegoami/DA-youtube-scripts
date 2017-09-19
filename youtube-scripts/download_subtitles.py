@@ -36,6 +36,14 @@ if __name__ == "__main__":
         print("Usage : python download_subtitles.py --workDir <workDir> --inputFile <inputFile> --outDir <outDir>")
         sys.exit(0)
 
+    if not os.path.isdir(args.outDir):
+        print("{} does not exist -- exiting".format(args.outDir))
+        sys.exit(0)
+
+    if not os.path.isdir(args.workDir):
+        print("{} does not exist -- exiting".format(args.workDir))
+        sys.exit(0)
+
     amara = Amara(amara_headers)
     args = argparser.parse_args()
     videos_json = {}

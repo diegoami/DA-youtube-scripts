@@ -31,6 +31,15 @@ if __name__ == "__main__":
     if (args.workDir is None or args.inputFile is None or args.outDir is None):
         print("Usage : python download_videos.py --workdDir <workDir> --inputFile <inputFile> --outDir <outputDirectory>")
         sys.exit(0)
+
+    if not os.path.isdir(args.outDir):
+        print("{} does not exist -- exiting".format(args.outDir))
+        sys.exit(0)
+
+    if not os.path.isdir(args.workDir):
+        print("{} does not exist -- exiting".format(args.workDir))
+        sys.exit(0)
+
     videos_json = load_definition(videos_json, args.inputFile, args.workDir)
     video_key_lst = [k for k, v in videos_json.items()]
     start = int(args.start) if args.start else 0

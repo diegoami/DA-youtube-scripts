@@ -12,6 +12,11 @@ if __name__ == "__main__":
     if (args.workDir is None):
         print("Usage : python save_liked_videos.py --workdDir <workDir> --maxCount <maxCount>")
         sys.exit(0)
+
+    if not os.path.isdir(args.workDir):
+        print("{} does not exist -- exiting".format(args.workDir))
+        sys.exit(0)
+
     likedchannel = youtube.liked_channel()
     outputFile = args.workDir+'/liked.json'
     print("Saving video descriptions from the channel {} into the file {} ".format(likedchannel, outputFile ))

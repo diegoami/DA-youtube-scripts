@@ -21,19 +21,19 @@ if __name__ == "__main__":
     import moviepy.editor as mp
 
     argparser.add_argument('--inputDir')
-    argparser.add_argument('--outputDir')
+    argparser.add_argument('--outDir')
 
     args = argparser.parse_args()
-    if (args.inputDir is None or args.outputDir is None ) :
-        print("Usage : python convert_to_audios.py --inputDir <inputDir> --outputDir <outputDir>")
+    if (args.inputDir is None or args.outDir is None ) :
+        print("Usage : python convert_to_audios.py --inputDir <inputDir> --outDir <outDir>")
         sys.exit(0)
 
     if not os.path.isdir(args.inputDir):
         print("{} does not exist -- exiting".format(args.inputDir))
         sys.exit(0)
 
-    if not os.path.isdir(args.outputDir):
-        print("{} does not exist -- exiting".format(args.outputDir))
+    if not os.path.isdir(args.outDir):
+        print("{} does not exist -- exiting".format(args.outDir))
         sys.exit(0)
 
 
@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
         file_root, file_extension = os.path.splitext(basename )
         subtitle_file = args.inputDir+'/'+file_root+".srt"
-        ouputaudiofile = args.outputDir+'/'+file_root+".mp3"
-        ouputaudiofileFlac = args.outputDir + '/' + file_root + ".flac"
+        ouputaudiofile = args.outDir+'/'+file_root+".mp3"
+        ouputaudiofileFlac = args.outDir + '/' + file_root + ".flac"
 
         if not os.path.isfile(ouputaudiofile) :
             print("Saving {}".format(ouputaudiofile))
