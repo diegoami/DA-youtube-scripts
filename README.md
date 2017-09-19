@@ -53,7 +53,7 @@ python convert_to_audios.py ---inputDir ~/musicvideos/russian  --outputDir ~/mus
 
 ### DOWNLOAD SUBTITLES
 
-**download_subtitles.py** is used to download subtitles from videos, if they are available on Amara. It tries to keep the names consistent with the video names, so programs like VLC find the subtitles automatically. This will download sub
+**download_subtitles.py** is used to download subtitles from videos, if they are available on Amara. It tries to keep the names consistent with the video names, so programs like VLC find the subtitles automatically. This will download subtitles from *russian/subtitles.json* into *~/musicvideos/russian*
 
 ```
 --workDir=russian --inputFile subtitles.json --outDir ~/musicvideos/russian --language ru
