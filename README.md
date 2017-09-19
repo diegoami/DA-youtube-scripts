@@ -83,7 +83,7 @@ python save_liked_videos.py --workDir=russian --maxCount=1
 
 ### RECOMMEND VIDEOS
 
-**recommend_videos.py** is used to retrieve recommended videos based on the videos you liked on Youtbe. Here it saves recommended videos to *russian/recommended.json* taking into account the videos you liked in *russian/liked.json*.
+**recommend_videos.py** is used to retrieve recommended videos based on the videos you liked on Youtube. Here it saves recommended videos to *russian/recommended.json* taking into account the videos you liked in *russian/liked.json*.
 Other parameters are accepted, such as *excludedFile*, *ignoredFile* and so on.
 I wrote this script because I did not like the recommendation system on youtube, as it bases on your chronology and not on the videos you liked.
 Later on I managed to make it work creating separate accounts for each "mood" - so I am not actually using this script any longer.
