@@ -7,11 +7,11 @@ Note that Ctrl+C interrupts only the current conversion but not the whole proces
 
 ## REQUIREMENTS
 
-Required are **youtube credentials** (to be saved as **youtube-scripts/client_secrets_yt.json**).
+Required are **youtube credentials** (to be saved as **youtube-scripts/client_secrets_yt.json**). See here to find out how to get credentials : https://developers.google.com/youtube/analytics/registering_an_application#Create_OAuth2_Tokens
 
 Note that on the first execution you may also be required to login on youtube. An authentication json file will be saved locally and you will have to execute the script a second time.
 
-For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** )
+For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** ) that you can find here : https://amara.org/profiles/account/
 
 An environment containing the libraries listed in **youtube-scripts.yml** is required. Note that some libraries listed may be redundant.
 On Anaconda on Linux
