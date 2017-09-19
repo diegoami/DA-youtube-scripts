@@ -1,6 +1,6 @@
 # YOUTUBE SCRIPTS COLLECTION
 
-Collection of scripts used to perform various operations on Youtube
+Collection of scripts used to perform various operations on Youtube.
 Included are also collections of working youtube links.
 
 
@@ -12,11 +12,11 @@ Note that on the first execution you may also be required to login on youtube. A
 
 For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** )
 
-An environment contained the libraries listed in **youtube-scripts.yml** is required (created with anaconda). Note that some may be redundant.
+An environment containing the libraries listed in **youtube-scripts.yml** is required (anaconda is preferred). Note that some libraries listed may be redundant.
 
 ## JSON FILE FORMAT
 
-The format of the lists of the youtube videos you want to download, in the json format, is like that. The key is the _youtube identifier_, the one which is at the end of the youtube URL : https://www.youtube.com/watch?v=**3lhzk9VTTUA**
+The format of the lists of the youtube videos you want to download, in the json format, is below. The key is the _youtube identifier_, the one which is at the end of the youtube URL. In the case of the first video below : https://www.youtube.com/watch?v=3lhzk9VTTUA
 
 ```
 
@@ -30,7 +30,6 @@ Note that that filename (withouth path) specified as *inputFile* should be in th
 
 The scripts are under the directory **youtube-scripts** and should be executed from that directory.
 
-Note that all possible parameters are listed here, please see the sources for additional parameters
 
 ### DOWNLOADING VIDEOS
 
@@ -65,7 +64,7 @@ python convert_to_audios.py ---inputDir ~/musicvideos/russian  --outputDir ~/mus
 ### SAVE LIKED VIDEOS
 
 
-**save_liked_videos.py** is used to retrieve the list of videos you liked on youtube. For instance you save them to russian/liked.json and limit the search only to the first page
+**save_liked_videos.py** is used to retrieve the list of videos you liked on youtube. For instance below you save them to *russian/liked.json* and limit the search only to the first page
 
 ```
 python save_liked_videos.py --workDir=russian --maxCount=1
@@ -76,7 +75,7 @@ python save_liked_videos.py --workDir=russian --maxCount=1
 **recommend_videos.py** is used to retrieve recommended videos based on the videos you liked on Youtbe. Here it saves recommended videos to *russian/recommended.json* taking into account the videos you liked in *russian/liked.json*.
 Other parameters are accepted, such as *excludedFile*, *ignoredFile* and so on.
 I wrote this script because I did not like the recommendation system on youtube, as it bases on your chronology and not on the videos you liked.
-Later on I manage to make it work creating separate accounts for each "mood" - so I am not using this script any longer
+Later on I managed to make it work creating separate accounts for each "mood" - so I am not actually using this script any longer.
 
 ```
 python recommend_videos.py --workDir=russian --maxCount=3 --inputFile=liked.json  --recommendedFile=recommended.json

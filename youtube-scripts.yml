@@ -52,5 +52,5 @@ dependencies:
   - xgboost==0.6
   - youtube-dl==2017.8.18
   - youtube3==0.0.3.2
-prefix: /home/diegoami/anaconda3/envs/hobby
+prefix: /home/diegoami/anaconda3/envs/youtube-scripts.yml
 
