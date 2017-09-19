@@ -1,4 +1,4 @@
-name: hobby
+name: youtube-scripts.yml
 channels:
 - defaults
 dependencies:
@@ -49,5 +49,8 @@ dependencies:
   - tqdm==4.11.2
   - twine==1.9.1
   - uritemplate==3.0.0
+  - xgboost==0.6
   - youtube-dl==2017.8.18
   - youtube3==0.0.3.2
+prefix: /home/diegoami/anaconda3/envs/hobby
+

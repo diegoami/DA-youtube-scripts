@@ -35,9 +35,12 @@ def process_videos(workDir='.', inputFile='liked.json', recommendedFile='recomme
 
 
 def load_definition(records, inputFile, workDir):
-    if os.path.isfile(workDir + '/' + inputFile):
-        with open(workDir + '/' + inputFile, 'r', encoding="utf-8") as f:
+    inputFileC = workDir + '/' + inputFile
+    if os.path.isfile(inputFileC):
+        with open(inputFileC, 'r', encoding="utf-8") as f:
             records = dict(json.load(f))
+    else:
+        print("Cannot find file {}".format(inputFileC))
     return records
 
 
@@ -78,6 +81,7 @@ def save_to_json(outputFile, outputData, workDir):
 
     with open(workDir + '/' + outputFile, 'w', encoding="utf-8") as f:
         json.dump(outputData, f, ensure_ascii=False)
+        print("Saved file: {}".format(workDir + '/' + outputFile))
 
 
 def retrieve_recommended(args):
@@ -94,7 +98,7 @@ def eliminate_duplicates(args):
 
 
     liked = load_definition(liked, args.inputFile, args.workDir)
-    recommended = load_definition(recommended, args.recommendedFile, args.workDir)
+    recommended = load_definition(recommended, args.recommendedFile or 'recommended.json', args.workDir)
     duplicates, no_duplicates = tokenize_lists(recommended=recommended, liked=liked, workDir=args.workDir,
                                                ignore_words_file='ignore_words.txt')
     save_to_json(outputData=list([[k, v] for k, v in duplicates.items()]), outputFile='duplicates.json',
@@ -107,13 +111,20 @@ if __name__ == "__main__":
     argparser.add_argument('--workDir')
     argparser.add_argument('--maxCount')
     argparser.add_argument('--inputFile')
-    argparser.add_argument('--start')
 
+
+    argparser.add_argument('--start')
     argparser.add_argument('--end')
     argparser.add_argument('--recommendedFile')
     argparser.add_argument('--excludedFile')
     argparser.add_argument('--postponedFile')
 
+
     args = argparser.parse_args()
+
+    if (args.workDir is None):
+        print("Usage : python recommend_videos.py --workdDir <workDir> --maxCount <maxCount> --inputFile <file>")
+        sys.exit(0)
+
     retrieve_recommended(args)
     eliminate_duplicates(args)

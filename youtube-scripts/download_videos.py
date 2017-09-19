@@ -4,15 +4,17 @@ import json
 from oauth2client.tools import argparser
 import traceback
 from youtube_dl.utils import sanitize_filename
-
-
+import sys
 
 
 
 def load_definition(records, inputFile, workDir):
-    if os.path.isfile(workDir + '/' + inputFile):
-        with open(workDir + '/' + inputFile, 'r', encoding="utf-8") as f:
+    inputFileC = workDir + '/' + inputFile
+    if os.path.isfile(inputFileC):
+        with open(inputFileC, 'r', encoding="utf-8") as f:
             records = dict(json.load(f))
+    else:
+        print("Cannot find file {}".format(inputFileC))
     return records
 
 
@@ -26,6 +28,9 @@ if __name__ == "__main__":
 
     args = argparser.parse_args()
     videos_json = {}
+    if (args.workDir is None or args.inputFile is None or args.outDir is None):
+        print("Usage : python download_videos.py --workdDir <workDir> --inputFile <inputFile> --outDir <outputDirectory>")
+        sys.exit(0)
     videos_json = load_definition(videos_json, args.inputFile, args.workDir)
     video_key_lst = [k for k, v in videos_json.items()]
     start = int(args.start) if args.start else 0

@@ -1,18 +1,21 @@
 from amaraapi.amara import Amara
 
+import sys
+sys.path.append('..')
+
 import argparse
 from amara_env import amara_headers
 import os
 import json
 import traceback
-import sys
-
 def load_definition(records, inputFile, workDir):
-    if os.path.isfile(workDir + '/' + inputFile):
-        with open(workDir + '/' + inputFile, 'r', encoding="utf-8") as f:
+    inputFileC = workDir + '/' + inputFile
+    if os.path.isfile(inputFileC):
+        with open(inputFileC, 'r', encoding="utf-8") as f:
             records = dict(json.load(f))
+    else:
+        print("Cannot find file {}".format(inputFileC))
     return records
-
 
 
 if __name__ == "__main__":
@@ -25,7 +28,13 @@ if __name__ == "__main__":
     argparser.add_argument('--outDir')
     argparser.add_argument('--language')
 
+
     args = argparser.parse_args()
+
+
+    if (args.workDir is None or args.inputFile is None or args.outDir is None):
+        print("Usage : python download_subtitles.py --workDir <workDir> --inputFile <inputFile> --outDir <outDir>")
+        sys.exit(0)
 
     amara = Amara(amara_headers)
     args = argparser.parse_args()
