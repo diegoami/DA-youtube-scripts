@@ -43,6 +43,8 @@ The scripts are under the directory **youtube-scripts** and should be executed f
 
 **download_videos.py** is used to download the videos you listed in a json file, in the format specified above. For instance, in this case the files listed in *russian/liked.json* will be downloaded to *~/musicvideos/russian*
 
+Obviously, it is required to install the related codecs.
+
 ```
 python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/musicvideos/russian
 ```
