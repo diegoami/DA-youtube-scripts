@@ -2,6 +2,7 @@
 
 Collection of scripts used to perform various operations on Youtube.
 Included are also collections of working youtube links.
+Note that Ctrl+C interrupts only the current conversion but not the whole process in those scripts - use CTRL+Z or kill from another terminal.
 
 
 ## REQUIREMENTS
@@ -12,7 +13,14 @@ Note that on the first execution you may also be required to login on youtube. A
 
 For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** )
 
-An environment containing the libraries listed in **youtube-scripts.yml** is required (anaconda is preferred). Note that some libraries listed may be redundant.
+An environment containing the libraries listed in **youtube-scripts.yml** is required. Note that some libraries listed may be redundant.
+On Anaconda on Linux
+
+```
+conda env create -f youtube-scripts.yml
+source activate youtube-scripts
+
+```
 
 ## JSON FILE FORMAT
 
@@ -46,17 +54,18 @@ python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/mu
 
 **convert_to_audios.py** extracts the audio file from the videos in a specific directory (here *~/musicvideos/russian* ) and saves them as mp3 files only with sound to another directory (here *~/musicaudios/russian*)
 
-```
-python convert_to_audios.py ---inputDir ~/musicvideos/russian  --outputDir ~/musicaudios/russian
-```
+Requires FFMMPEG. On Ubuntu :  *sudo apt-get install ffmpeg*
 
+```
+python convert_to_audios.py --inputDir ~/musicvideos/russian  --outputDir ~/musicaudios/russian
+```
 
 ### DOWNLOAD SUBTITLES
 
 **download_subtitles.py** is used to download subtitles from videos, if they are available on Amara. It tries to keep the names consistent with the video names, so programs like VLC find the subtitles automatically. This will download subtitles from *russian/subtitles.json* into *~/musicvideos/russian*
 
 ```
---workDir=russian --inputFile subtitles.json --outDir ~/musicvideos/russian --language ru
+python download_subtitles.py --workDir=russian --inputFile subtitles.json --outDir ~/musicvideos/russian --language ru
 ```
 
 --start and --end are optional to retrieve videos from *start* to *end* in the inputFile
