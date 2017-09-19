@@ -1,1 +1,0 @@
-amara_headers = dict({"X-api-username": "diego.amicabile@gmail.com", "X-api-key": "eb859af1c763f9b3c9b00b409b235e399c7ef64f"})

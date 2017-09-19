@@ -1,4 +1,4 @@
-# YOUTUBE SCRAPING UTILITIES
+# YOUTUBE SCRIPTS COLLECTION
 
 Collection of scripts used to perform various operations on Youtube
 Included are also collections of working youtube links.
