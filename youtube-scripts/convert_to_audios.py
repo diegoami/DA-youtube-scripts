@@ -1,16 +1,17 @@
 from oauth2client.tools import argparser
-
+import traceback
 import glob
 import os
 import itertools
 import sys
 import subprocess as sp
 
+
 def conv_to_audio(inputFile, outputFile):
     clip = mp.VideoFileClip(inputFile)
     clip.audio.write_audiofile(outputFile)
 
-def conv_to_flac(inputFile, outputFile):
+def conv_to_audio_gen(inputFile, outputFile):
     cmd= [ "ffmpeg", '-i',inputFile, "-ac", "1" , outputFile]
     newprocess = sp.Popen(cmd)
     newprocess.wait()
@@ -20,12 +21,21 @@ if __name__ == "__main__":
     import moviepy.editor as mp
 
     argparser.add_argument('--inputDir')
-    argparser.add_argument('--outputDir')
+    argparser.add_argument('--outDir')
 
     args = argparser.parse_args()
-    if (args.inputDir is None or args.outputDir is None ) :
-        print("Usage : python convert_to_audios.py --inputDir <inputDir> --outputDir <outputDir>")
+    if (args.inputDir is None or args.outDir is None ) :
+        print("Usage : python convert_to_audios.py --inputDir <inputDir> --outDir <outDir>")
         sys.exit(0)
+
+    if not os.path.isdir(args.inputDir):
+        print("{} does not exist -- exiting".format(args.inputDir))
+        sys.exit(0)
+
+    if not os.path.isdir(args.outDir):
+        print("{} does not exist -- exiting".format(args.outDir))
+        sys.exit(0)
+
 
     filenames1 = list(glob.iglob(args.inputDir + '/*.mp4'))
     filenames2 = list(glob.iglob(args.inputDir + '/*.webm'))
@@ -38,8 +48,8 @@ if __name__ == "__main__":
 
         file_root, file_extension = os.path.splitext(basename )
         subtitle_file = args.inputDir+'/'+file_root+".srt"
-        ouputaudiofile = args.outputDir+'/'+file_root+".mp3"
-        ouputaudiofileFlac = args.outputDir + '/' + file_root + ".flac"
+        ouputaudiofile = args.outDir+'/'+file_root+".mp3"
+        ouputaudiofileFlac = args.outDir + '/' + file_root + ".flac"
 
         if not os.path.isfile(ouputaudiofile) :
             print("Saving {}".format(ouputaudiofile))
@@ -48,14 +58,17 @@ if __name__ == "__main__":
             except:
                 print("Error converting {}".format(ouputaudiofile))
 
+                traceback.print_exc(file=sys.stdout)
         else:
             print("Skipping {}".format(ouputaudiofile))
         if False and not os.path.isfile(ouputaudiofileFlac):
             print("Saving {}".format(ouputaudiofileFlac))
             try:
-                conv_to_flac(ouputaudiofile, ouputaudiofileFlac)
+                conv_to_audio_gen(ouputaudiofile, ouputaudiofileFlac)
             except:
                 print("Error converting {}".format(ouputaudiofileFlac))
+
+                traceback.print_exc(file=sys.stdout)
         else:
             print("Skipping {}".format(ouputaudiofileFlac))
 

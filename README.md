@@ -2,17 +2,25 @@
 
 Collection of scripts used to perform various operations on Youtube.
 Included are also collections of working youtube links.
+Note that Ctrl+C interrupts only the current conversion but not the whole process in those scripts - use CTRL+Z or kill from another terminal.
 
 
 ## REQUIREMENTS
 
-Required are **youtube credentials** (to be saved as **youtube-scripts/client_secrets_yt.json**).
+Required are **youtube credentials** (to be saved as **youtube-scripts/client_secrets_yt.json**). See here to find out how to get credentials : https://developers.google.com/youtube/analytics/registering_an_application#Create_OAuth2_Tokens
 
 Note that on the first execution you may also be required to login on youtube. An authentication json file will be saved locally and you will have to execute the script a second time.
 
-For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** )
+For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** ) that you can find here : https://amara.org/profiles/account/
 
-An environment containing the libraries listed in **youtube-scripts.yml** is required (anaconda is preferred). Note that some libraries listed may be redundant.
+An environment containing the libraries listed in **youtube-scripts.yml** is required. Note that some libraries listed may be redundant.
+On Anaconda on Linux
+
+```
+conda env create -f youtube-scripts.yml
+source activate youtube-scripts
+
+```
 
 ## JSON FILE FORMAT
 
@@ -35,6 +43,8 @@ The scripts are under the directory **youtube-scripts** and should be executed f
 
 **download_videos.py** is used to download the videos you listed in a json file, in the format specified above. For instance, in this case the files listed in *russian/liked.json* will be downloaded to *~/musicvideos/russian*
 
+Obviously, it is required to install the related codecs.
+
 ```
 python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/musicvideos/russian
 ```
@@ -46,17 +56,18 @@ python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/mu
 
 **convert_to_audios.py** extracts the audio file from the videos in a specific directory (here *~/musicvideos/russian* ) and saves them as mp3 files only with sound to another directory (here *~/musicaudios/russian*)
 
-```
-python convert_to_audios.py ---inputDir ~/musicvideos/russian  --outputDir ~/musicaudios/russian
-```
+Requires FFMMPEG. On Ubuntu :  *sudo apt-get install ffmpeg*
 
+```
+python convert_to_audios.py --inputDir ~/musicvideos/russian  --outDir ~/musicaudios/russian
+```
 
 ### DOWNLOAD SUBTITLES
 
-**download_subtitles.py** is used to download subtitles from videos, if they are available on Amara. It tries to keep the names consistent with the video names, so programs like VLC find the subtitles automatically. This will download sub
+**download_subtitles.py** is used to download subtitles from videos, if they are available on Amara. It tries to keep the names consistent with the video names, so programs like VLC find the subtitles automatically. This will download subtitles from *russian/subtitles.json* into *~/musicvideos/russian*
 
 ```
---workDir=russian --inputFile subtitles.json --outDir ~/musicvideos/russian --language ru
+python download_subtitles.py --workDir=russian --inputFile subtitles.json --outDir ~/musicvideos/russian --language ru
 ```
 
 --start and --end are optional to retrieve videos from *start* to *end* in the inputFile
@@ -72,7 +83,7 @@ python save_liked_videos.py --workDir=russian --maxCount=1
 
 ### RECOMMEND VIDEOS
 
-**recommend_videos.py** is used to retrieve recommended videos based on the videos you liked on Youtbe. Here it saves recommended videos to *russian/recommended.json* taking into account the videos you liked in *russian/liked.json*.
+**recommend_videos.py** is used to retrieve recommended videos based on the videos you liked on Youtube. Here it saves recommended videos to *russian/recommended.json* taking into account the videos you liked in *russian/liked.json*.
 Other parameters are accepted, such as *excludedFile*, *ignoredFile* and so on.
 I wrote this script because I did not like the recommendation system on youtube, as it bases on your chronology and not on the videos you liked.
 Later on I managed to make it work creating separate accounts for each "mood" - so I am not actually using this script any longer.

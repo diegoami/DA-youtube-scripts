@@ -126,5 +126,9 @@ if __name__ == "__main__":
         print("Usage : python recommend_videos.py --workdDir <workDir> --maxCount <maxCount> --inputFile <file>")
         sys.exit(0)
 
+    if not os.path.isdir(args.workDir):
+        print("{} does not exist -- exiting".format(args.workDir))
+        sys.exit(0)
+
     retrieve_recommended(args)
     eliminate_duplicates(args)
