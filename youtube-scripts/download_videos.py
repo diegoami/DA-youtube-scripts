@@ -29,7 +29,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
     videos_json = {}
     if (args.workDir is None or args.inputFile is None or args.outDir is None):
-        print("Usage : python download_videos.py --workdDir <workDir> --inputFile <inputFile> --outDir <outputDirectory>")
+        print("Usage : python download_videos.py --workdDir <workDir> --inputFile <inputFile> --outDir <outputDirectory>  ")
         sys.exit(0)
 
     if not os.path.isdir(args.outDir):

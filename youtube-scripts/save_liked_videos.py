@@ -6,6 +6,8 @@ import sys
 if __name__ == "__main__":
     argparser.add_argument('--workDir')
     argparser.add_argument('--maxCount')
+    argparser.add_argument('--channelId')
+
     args = argparser.parse_args()
     youtube = Youtube(get_authenticated_service(args))
     maxCount = args.maxCount or 2000
@@ -17,9 +19,13 @@ if __name__ == "__main__":
         print("{} does not exist -- exiting".format(args.workDir))
         sys.exit(0)
 
-    likedchannel = youtube.liked_channel()
-    outputFile = args.workDir+'/liked.json'
-    print("Saving video descriptions from the channel {} into the file {} ".format(likedchannel, outputFile ))
+    if (args.channelId is None):
+        channel = youtube.liked_channel()
+        outputFile = args.workDir+'/liked.json'
+    else:
+        channel = args.channelId
+        outputFile = args.workDir + '/'+args.channelId+'.json'
+    print("Saving video descriptions from the channel {} into the file {} ".format(channel, outputFile))
 
     count = 0
     liked = {}
@@ -28,7 +34,7 @@ if __name__ == "__main__":
             liked = json.load(f)
 
 
-    for videos in youtube.iterate_videos_in_channel(likedchannel,maxCount):
+    for videos in youtube.iterate_videos_in_channel(channel, maxCount):
         for item in videos['items']:
             print(item['contentDetails']['videoId'],item['snippet']['title'])
             liked[item['contentDetails']['videoId']] = item['snippet']['title']
