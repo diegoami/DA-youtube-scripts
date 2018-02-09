@@ -18,6 +18,29 @@ def load_definition(records, inputFile, workDir):
     return records
 
 
+def download_videos(youtube, input_file, work_dir, start, end, out_dir):
+    videos_json = {}
+    videos_json = load_definition(videos_json, input_file, work_dir)
+    video_key_lst = [k for k, v in videos_json.items()]
+    start = int(start) if start else 0
+    end = min(int(end), len(video_key_lst)) if end else len(video_key_lst)
+    download_list = video_key_lst[start:end]
+
+    for to_download in download_list:
+        try:
+            title = videos_json[to_download]
+
+            file_name_main = out_dir + '/' + sanitize_filename(title) + '-' + to_download
+            psb_filenames = [file_name_main + '.' + ext for ext in ['webm', 'mkv', 'mp4']]
+            if any([os.path.isfile(psb_filename) for psb_filename in psb_filenames]):
+                print("Found file {}, skipping".format(file_name_main))
+                continue
+
+            youtube.download(to_download, out_dir)
+        except:
+            print("Skipping {}".format(to_download))
+            traceback.print_exc(file=sys.stdout)
+
 
 if __name__ == "__main__":
     argparser.add_argument('--workDir')
@@ -27,7 +50,7 @@ if __name__ == "__main__":
     argparser.add_argument('--outDir')
 
     args = argparser.parse_args()
-    videos_json = {}
+    youtube = Youtube(get_authenticated_service(args))
     if (args.workDir is None or args.inputFile is None or args.outDir is None):
         print("Usage : python download_videos.py --workdDir <workDir> --inputFile <inputFile> --outDir <outputDirectory>  ")
         sys.exit(0)
@@ -40,23 +63,4 @@ if __name__ == "__main__":
         print("{} does not exist -- exiting".format(args.workDir))
         sys.exit(0)
 
-    videos_json = load_definition(videos_json, args.inputFile, args.workDir)
-    video_key_lst = [k for k, v in videos_json.items()]
-    start = int(args.start) if args.start else 0
-    end = min(int(args.end), len(video_key_lst)) if args.end else len(video_key_lst)
-    download_list = video_key_lst[start:end]
-    youtube = Youtube(get_authenticated_service(args))
-    for to_download in download_list:
-        try:
-            title = videos_json[to_download]
-
-            file_name_main = args.outDir + '/' + sanitize_filename(title) + '-' + to_download
-            psb_filenames = [file_name_main+'.' + ext for ext in ['webm', 'mkv','mp4']]
-            if any([ os.path.isfile(psb_filename) for psb_filename  in psb_filenames ]):
-                print("Found file {}, skipping".format(file_name_main ))
-                continue
-
-            youtube.download(to_download, args.outDir)
-        except:
-            print("Skipping {}".format(to_download))
-            traceback.print_exc(file=sys.stdout)
+    download_videos(youtube, input_file=args.inputFile, work_dir=args.workDir,start=args.start, end=args.end, out_dir=args.outDir)
