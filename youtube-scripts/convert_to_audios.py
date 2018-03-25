@@ -37,9 +37,9 @@ if __name__ == "__main__":
         sys.exit(0)
 
 
-    filenames1 = list(glob.iglob(args.inputDir + '/*.mp4'))
-    filenames2 = list(glob.iglob(args.inputDir + '/*.webm'))
-    filenames3 = list(glob.iglob(args.inputDir + '/*.mkv'))
+    filenames1 = list(glob.iglob(args.inputDir + '/**/*.mp4', recursive=True))
+    filenames2 = list(glob.iglob(args.inputDir + '/**/*.webm', recursive=True))
+    filenames3 = list(glob.iglob(args.inputDir + '/**/*.mkv', recursive=True))
     filenames = filenames1 + filenames2 + filenames3
     for filename in filenames:
         print(filename)
@@ -49,7 +49,6 @@ if __name__ == "__main__":
         file_root, file_extension = os.path.splitext(basename )
         subtitle_file = args.inputDir+'/'+file_root+".srt"
         ouputaudiofile = args.outDir+'/'+file_root+".mp3"
-        ouputaudiofileFlac = args.outDir + '/' + file_root + ".flac"
 
         if not os.path.isfile(ouputaudiofile) :
             print("Saving {}".format(ouputaudiofile))
@@ -61,16 +60,6 @@ if __name__ == "__main__":
                 traceback.print_exc(file=sys.stdout)
         else:
             print("Skipping {}".format(ouputaudiofile))
-        if False and not os.path.isfile(ouputaudiofileFlac):
-            print("Saving {}".format(ouputaudiofileFlac))
-            try:
-                conv_to_audio_gen(ouputaudiofile, ouputaudiofileFlac)
-            except:
-                print("Error converting {}".format(ouputaudiofileFlac))
-
-                traceback.print_exc(file=sys.stdout)
-        else:
-            print("Skipping {}".format(ouputaudiofileFlac))
 
 
             #conv_to_audio(args.inputDir or "", args.inputFile, args.outputFile)
