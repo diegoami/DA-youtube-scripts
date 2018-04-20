@@ -8,7 +8,7 @@ import sys
 import fnmatch
 import os
 import shutil
-
+from multiprocessing import Pool
 
 
 def load_definition(inputFile, workDir):
@@ -23,9 +23,15 @@ def load_definition(inputFile, workDir):
             records = {}
     return records
 
+def youtube_download(video_id, channel_dir_title):
+    print("Downloading {} to {} ".format(video_id, channel_dir_title))
+    youtube.download(video_id, channel_dir_title)
+    print("Finished download {} to {} ".format(video_id, channel_dir_title))
+
+
 
 def download_videos(youtube, input_file, work_dir, start, end, out_dir, orig_dir=None):
-
+    pool = Pool(processes=6)  # run no more than 6 at a time
     videos_json = load_definition(input_file, work_dir)
 
     video_key_lst = [k for k, v in videos_json.items()]
@@ -40,11 +46,11 @@ def download_videos(youtube, input_file, work_dir, start, end, out_dir, orig_dir
         try:
             title = videos_json[video_id]
             channel_id = youtube.get_channel_id(video_id)
+            print("Processing {} in channel {}".format(title, channel_id))
             if channel_id in submap:
                 channel_name = submap[channel_id]
             else:
                 channel_name = youtube.get_channel_title(channel_id)
-
 
             channel_dir = out_dir + channel_id
             channel_dir_title = out_dir + channel_id+'_'+sanitize_filename(channel_name)
@@ -69,7 +75,6 @@ def download_videos(youtube, input_file, work_dir, start, end, out_dir, orig_dir
             matching_in_main = fnmatch.filter(files_in_main_dir, psb_regexp )
             matching_in_channel = fnmatch.filter(files_in_chan_dir, psb_regexp )
 
-
             if len(matching_in_main) > 0:
                 for file_matching in matching_in_main:
                     print("Moving file {} from {} to {} ".format(file_matching, out_dir, channel_dir))
@@ -78,7 +83,9 @@ def download_videos(youtube, input_file, work_dir, start, end, out_dir, orig_dir
                 print("Found {} in {}, passing".format(video_id, channel_dir_title))
                 pass
             else:
+                print("Must download {}".format(video_id, channel_dir_title))
                 if orig_dir_title:
+                    print("Old filename exists {}, {}".format(orig_dir_title))
                     files_in_orig_dir = os.listdir(orig_dir_title)
                     matching_in_orig = fnmatch.filter(files_in_orig_dir, psb_regexp)
                     if len(matching_in_orig) > 0:
@@ -86,13 +93,14 @@ def download_videos(youtube, input_file, work_dir, start, end, out_dir, orig_dir
                             shutil.copy(orig_dir_title+'/'+ file_matching , channel_dir_title + '/' + file_matching )
                             print("Coping {} from {} to {} ".format(file_matching, orig_dir_title, channel_dir_title))
                 else:
-                    youtube.download(video_id, channel_dir_title )
-                    print("Downloading {} to {} ".format(video_id, channel_dir_title))
-
+                    print("Trying to start process to download {} {}".format(video_id, channel_dir_title))
+                    pool.apply_async(youtube_download, (video_id, channel_dir_title))  # runs in *only* one process
         except:
-            print("Skipping {} : {}".format(video_id, title))
-            traceback.print_exc(file=sys.stdout)
+                print("Skipping {} : {}".format(video_id, title))
+                traceback.print_exc(file=sys.stdout)
 
+    pool.close()
+    pool.join()
 
 if __name__ == "__main__":
     argparser.add_argument('--workDir')
