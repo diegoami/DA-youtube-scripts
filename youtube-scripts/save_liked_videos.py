@@ -7,29 +7,34 @@ import sys
 
 def save_video_list(youtube, max_count, work_dir, channel_id):
 
-
+    channel_file = None
     if (channel_id is None):
         channel_id = youtube.liked_channel()
         output_file = work_dir+'/liked.json'
+        channel_file = work_dir +'/channels.json'
     else:
         channel_id = channel_id
         output_file = work_dir + '/'+ channel_id +'.json'
 
-
+    channels = {}
     print("Saving video descriptions from the channel {} into the file {} ".format(channel_id, output_file))
     count = 0
     liked = {}
     if os.path.isfile(output_file):
         with open(output_file, 'r', encoding="utf-8") as f:
             liked = json.load(f)
+    if channel_file and os.path.isfile(channel_file):
+        with open(output_file, 'r', encoding="utf-8") as f:
+            channels = json.load(channel_file)
     for videos in youtube.iterate_videos_in_channel(channel_id, max_count):
         for item in videos['items']:
+            video_id = item['contentDetails']['videoId']
             print(item['contentDetails']['videoId'], item['snippet']['title'])
             liked[item['contentDetails']['videoId']] = item['snippet']['title']
+
         count = count + 1
     with open(output_file, 'w', encoding="utf-8") as f:
         json.dump(liked, f, ensure_ascii=False)
-
 
 if __name__ == "__main__":
     argparser.add_argument('--workDir')
