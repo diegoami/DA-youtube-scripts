@@ -117,8 +117,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if not os.path.isdir(args.outDir):
-        print("{} does not exist -- exiting".format(args.outDir))
-        sys.exit(0)
+        print("{} does not exist -- creating it".format(args.outDir))
+        os.mkdir(args.outDir)
 
     if not os.path.isdir(args.workDir):
         print("{} does not exist -- exiting".format(args.workDir))
