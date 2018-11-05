@@ -5,7 +5,7 @@
 
 convert_audios () {
     echo $1
-    python youtube-scripts/convert_to_audios.py --inputDir /home/diego/musicvideos/$1 --outDir /home/diego/musicaudios/$1
+    python youtube-scripts/convert_to_audios.py --inputDir /media/diego/Samsung_T5/musicvideos/$1 --outDir /media/diego/Samsung_T5/musicaudios/$1
 }
 
 convert_audios 'italian'
