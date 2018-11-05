@@ -5,7 +5,7 @@ update_videos () {
     echo $2
 
     rm youtube-scripts/download_videos.py-oauth2.json
-    python youtube-scripts/download_videos.py --workDir youtube-scripts/$1 --inputFile liked.json --outDir $2/$1/
+    python youtube-scripts/download_videos.py --workDir youtube-scripts/$1 --inputFile liked.json --outDir $2/musicvideos/$1/
 }
 
 echo "Example : download_liked.sh /media/diego/Samsung_T5"

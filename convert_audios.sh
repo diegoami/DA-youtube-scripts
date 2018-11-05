@@ -5,13 +5,16 @@
 
 convert_audios () {
     echo $1
-    python youtube-scripts/convert_to_audios.py --inputDir /media/diego/Samsung_T5/musicvideos/$1 --outDir /media/diego/Samsung_T5/musicaudios/$1
+    python youtube-scripts/convert_to_audios.py --inputDir $2/musicvideos/$1 --outDir $2/musicaudios/$1
 }
 
-convert_audios 'italian'
-convert_audios 'russian'
-convert_audios 'polish'
-convert_audios 'southslavic'
-convert_audios 'romanian'
-convert_audios 'french'
-convert_audios 'easteurope'
+echo "Example : convert_audios.sh /media/diego/Samsung_T5"
+
+
+convert_audios 'italian' $1
+convert_audios 'russian' $1
+convert_audios 'polish' $1
+convert_audios 'southslavic' $1
+convert_audios 'romanian' $1
+convert_audios 'french' $1
+convert_audios 'easteurope' $1
