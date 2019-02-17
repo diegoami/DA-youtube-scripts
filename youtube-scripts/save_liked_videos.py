@@ -1,4 +1,4 @@
-from youtube3.youtube import *
+from youtube3 import YoutubeClient
 import json
 from oauth2client.tools import argparser
 import os.path
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     argparser.add_argument('--channelId')
 
     args = argparser.parse_args()
-    youtube = Youtube(get_authenticated_service(args))
+    youtube_client = YoutubeClient(os.path.join(os.path.dirname(__file__), 'client_secrets.json'))
     maxCount = args.maxCount or 2000
     if (args.workDir is None):
         print("Usage : python save_liked_videos.py --workdDir <workDir> --maxCount <maxCount> --channelId <channelId>")
@@ -53,4 +53,4 @@ if __name__ == "__main__":
         sys.exit(0)
 
 
-    save_video_list(youtube=youtube, max_count=maxCount, work_dir=args.workDir, channel_id=args.channelId)
+    save_video_list(youtube=youtube_client, max_count=maxCount, work_dir=args.workDir, channel_id=args.channelId)
