@@ -5,7 +5,7 @@ import os
 import itertools
 import sys
 import subprocess as sp
-
+import moviepy.editor as mp
 
 def conv_to_audio(inputFile, outputFile):
     clip = mp.VideoFileClip(inputFile)
@@ -18,7 +18,7 @@ def conv_to_audio_gen(inputFile, outputFile):
 
 
 if __name__ == "__main__":
-    import moviepy.editor as mp
+
 
     argparser.add_argument('--inputDir')
     argparser.add_argument('--outDir')
@@ -37,30 +37,25 @@ if __name__ == "__main__":
         sys.exit(0)
 
 
-    filenames1 = list(glob.iglob(args.inputDir + '/**/*.mp4', recursive=True))
-    filenames2 = list(glob.iglob(args.inputDir + '/**/*.webm', recursive=True))
-    filenames3 = list(glob.iglob(args.inputDir + '/**/*.mkv', recursive=True))
-    filenames = filenames1 + filenames2 + filenames3
+    filenames = list(glob.iglob(args.inputDir + '/**/*.mp4', recursive=True))
+
     for filename in filenames:
         print(filename)
+    basename = os.path.basename(filename)
+    file_root, file_extension = os.path.splitext(basename )
+    ouputaudiofile = args.outDir+'/'+file_root+".mp3"
 
-        basename = os.path.basename(filename)
+    if not os.path.isfile(ouputaudiofile) :
+        print("Saving {}".format(ouputaudiofile))
+        try:
+            conv_to_audio(filename, ouputaudiofile )
+        except:
+            print("Error converting {}".format(ouputaudiofile))
 
-        file_root, file_extension = os.path.splitext(basename )
-        subtitle_file = args.inputDir+'/'+file_root+".srt"
-        ouputaudiofile = args.outDir+'/'+file_root+".mp3"
-
-        if not os.path.isfile(ouputaudiofile) :
-            print("Saving {}".format(ouputaudiofile))
-            try:
-                conv_to_audio(filename, ouputaudiofile )
-            except:
-                print("Error converting {}".format(ouputaudiofile))
-
-                traceback.print_exc(file=sys.stdout)
-        else:
-            print("Skipping {}".format(ouputaudiofile))
+            traceback.print_exc(file=sys.stdout)
+    else:
+        print("Skipping {}".format(ouputaudiofile))
 
 
-            #conv_to_audio(args.inputDir or "", args.inputFile, args.outputFile)
+
 

@@ -7,32 +7,10 @@ Note that Ctrl+C interrupts only the current conversion but not the whole proces
 
 ## REQUIREMENTS
 
-Required are **youtube credentials** (to be saved as **youtube-scripts/client_secrets_yt.json**). See here to find out how to get credentials : https://developers.google.com/youtube/analytics/registering_an_application#Create_OAuth2_Tokens
+Required are **youtube credentials** (to be saved as **youtube-scripts/client_secretst.json**). See here to find out how to get credentials : https://developers.google.com/youtube/analytics/registering_an_application#Create_OAuth2_Tokens
 
 Note that on the first execution you may also be required to login on youtube. An authentication json file will be saved locally and you will have to execute the script a second time.
 
-For the Amara script, also an **amara Api-key** is required (See **amara_env_sample.py** ) that you can find here : https://amara.org/profiles/account/
-
-An environment containing the libraries listed in **youtube-scripts.yml** is required. Note that some libraries listed may be redundant.
-On Anaconda on Linux
-
-```
-conda env create -f youtube-scripts.yml
-source activate youtube-scripts
-
-```
-
-## JSON FILE FORMAT
-
-The format of the lists of the youtube videos you want to download, in the json format, is below. The key is the _youtube identifier_, the one which is at the end of the youtube URL. In the case of the first video below : https://www.youtube.com/watch?v=3lhzk9VTTUA
-
-```
-
-{"3lhzk9VTTUA": "Giulia Luzi - Paracadute (Official Video)", "7QEJDQlzGr0": "Bianca Atzei - Abbracciami perdonami gli sbagli", .... }
-
-```
-
-Note that that filename (withouth path) specified as *inputFile* should be in the directory specified as *workDir*.
 
 ## SCRIPTS DESCRIPTION
 
@@ -41,15 +19,13 @@ The scripts are under the directory **youtube-scripts** and should be executed f
 
 ### DOWNLOADING VIDEOS
 
-**download_videos.py** is used to download the videos you listed in a json file, in the format specified above. For instance, in this case the files listed in *russian/liked.json* will be downloaded to *~/musicvideos/russian*
+**download_videos.py** is used to download the videos from a mongo repository created in the repository musicblogs https://github.com/diegoami/musicblogs-scripts-PY
 
 Obviously, it is required to install the related codecs.
 
 ```
-python download_videos.py --workDir=russian --inputFile liked.json --outDir ~/musicvideos/russian
+python download_videos.py --blogId 556901760723185848  --outDir ~/musicvideos/southslavic
 ```
-
---start and --end are optional to retrieve videos from *start* to *end* in the inputFile
 
 ### EXTRACTING SOUNDS FROM VIDEOS
 
