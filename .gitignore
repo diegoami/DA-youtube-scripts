@@ -5,6 +5,6 @@ recommender/__pycache__/*
 *.py-oauth2.json
 amara_env.py
 youtube.dat
-**/client_secrets_yt.json
+**/client_secrets.json
 
 

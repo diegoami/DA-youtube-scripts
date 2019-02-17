@@ -41,20 +41,20 @@ if __name__ == "__main__":
 
     for filename in filenames:
         print(filename)
-    basename = os.path.basename(filename)
-    file_root, file_extension = os.path.splitext(basename )
-    ouputaudiofile = args.outDir+'/'+file_root+".mp3"
+        basename = os.path.basename(filename)
+        file_root, file_extension = os.path.splitext(basename )
+        ouputaudiofile = args.outDir+'/'+file_root+".mp3"
 
-    if not os.path.isfile(ouputaudiofile) :
-        print("Saving {}".format(ouputaudiofile))
-        try:
-            conv_to_audio(filename, ouputaudiofile )
-        except:
-            print("Error converting {}".format(ouputaudiofile))
+        if not os.path.isfile(ouputaudiofile) :
+            print("Saving {}".format(ouputaudiofile))
+            try:
+                conv_to_audio(filename, ouputaudiofile )
+            except:
+                print("Error converting {}".format(ouputaudiofile))
 
-            traceback.print_exc(file=sys.stdout)
-    else:
-        print("Skipping {}".format(ouputaudiofile))
+                traceback.print_exc(file=sys.stdout)
+        else:
+            print("Skipping {}".format(ouputaudiofile))
 
 
 
