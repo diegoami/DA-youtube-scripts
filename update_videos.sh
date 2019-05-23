@@ -9,7 +9,7 @@ update_videos () {
     popd
 }
 
-echo "Example : update_videos.sh /media/diego/Data/musicvideos"
+echo "Example : update_videos.sh /media/diego/Samsung_TS/musicvideos"
 
 update_videos 6377950492326759990 'italian' $1
 update_videos 446998987295244185 'russian' $1
